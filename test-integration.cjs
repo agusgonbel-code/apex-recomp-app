@@ -61,7 +61,7 @@ const first=Coach.session(settings,[],'train-1','2026-10-17');
 assert.equal(first.exercises.length,5);assert.equal(first.exercises[0].sets.length,2);
 assert.equal(Coach.next(settings,[{...first,status:'completed'}]).day,1);
 assert.equal(Coach.next({...settings,programId:'cycle-2'},[{...first,status:'completed'}]).day,0);
-assert.equal(Coach.routine(settings,4,0).light,true);
+assert.equal(Coach.routine(settings,4,0).light,true);const marks={...first,status:'completed',exercises:[{...first.exercises[0],sets:[{kg:'20',reps:'12',done:true},{kg:'20',reps:'9',done:true}]}]};assert.match(Coach.suggested([marks],Coach.routine(settings,1,0).exercises[0]).note,/Repite la carga/);marks.exercises[0].sets[1].reps='12';assert.match(Coach.suggested([marks],Coach.routine(settings,1,0).exercises[0]).note,/aumento de carga/);
 const withPlans={...old,coachProfile:settings,mealPreferences:{diet:'vegetarian',avoid:['leche']},mealSelections:menu};
 const restored=B.merge(old,withPlans);
 assert.deepEqual(restored.mealSelections,menu);assert.deepEqual(restored.coachProfile,settings);
