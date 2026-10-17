@@ -22,4 +22,23 @@ assert.match(C.exportCSV(old.sessions),/Press banca/);
 for(const f of ['index.html','manifest.webmanifest','icons/icon.svg'])assert.ok(fs.existsSync(f),'Falta '+f);
 const html=fs.readFileSync('index.html','utf8');for(const f of files.filter(f=>f!=='sw.js'))assert.ok(html.includes('./'+f),'index.html no carga '+f);
 const manifest=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));assert.equal(manifest.start_url,'./');assert.equal(manifest.scope,'./');
+
+const M=read('migration.js');
+const personal={app:'Personal Recomp',schemaVersion:1,exportedAt:'2026-10-08',data:{sessions:[{id:'legacy-1',date:'2026-10-08',title:'Rutina importada',status:'completed',exercises:[{name:'Press banca',exerciseId:'press',sets:[{kg:70,reps:8,done:true}]}]}],exercises:{press:{name:'Press banca'}},profile:{}}};
+assert.equal(M.validate(personal).sets,1);
+const imported=M.migrate(personal);assert.equal(B.validate(imported).sessions,1);
+assert.equal(imported.sessions[0].exercises[0].sets[0].kg,70);
+const joined=B.merge(old,imported);assert.equal(joined.sessions.length,2);
+assert.equal(joined.sessions.find(s=>s.id==='legacy-1').exercises[0].sets[0].reps,8);
+assert.throws(()=>M.validate({app:'Personal Recomp',data:{sessions:[],exercises:[]}}),/Formato/);
+assert.throws(()=>B.merge(old,{...old,sessions:[{...old.sessions[0],title:'Sobrescritura'}]}),/Conflicto/);
+S.write(store,'data',joined);
+assert.equal(S.read(store,'data').data.sessions.length,2);
+store.setItem('data','{malformed');
+const recovered=S.read(store,'data');
+assert.equal(recovered.recovered,true);
+assert.equal(recovered.data.sessions.length,1);
+assert.match(C.exportCSV([{...old.sessions[0],title:'=HYPERLINK("evil")'}]),/'=HYPERLINK/);
+console.log('Migración, fusión, conflictos y recuperación local verificados');
+
 console.log('APEX RECOMP: pruebas de integración superadas');
