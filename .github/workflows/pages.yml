@@ -2,13 +2,15 @@ name: Verificar y publicar APEX RECOMP
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
   pages: write
   id-token: write
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   test:
@@ -35,6 +37,7 @@ jobs:
           path: dist/
           if-no-files-found: error
   deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
     environment:
