@@ -49,13 +49,13 @@ assert.equal(new Set(Meals.catalog.map(r=>r.id)).size,Meals.catalog.length);
 assert.equal(new Set(Meals.catalog.map(r=>r.name)).size,Meals.catalog.length);
 assert.deepEqual(Object.keys(Meals.groups).map(c=>Meals.search('',c).length),[252,252,252,252]);
 const menu=Meals.makePlan('2026-10-17',['leche'],'vegetarian');
-assert.equal(Object.keys(menu).length,7);
+assert.equal(Object.keys(menu).length,7);assert.ok(Meals.groceries(menu).length<35,'El menú debe reutilizar ingredientes en la compra');
 for(const meals of Object.values(menu))for(const [category,id] of Object.entries(meals)){
   const recipe=Meals.byId.get(id);assert.equal(recipe.category,category);assert.equal(recipe.vegetarian,true);assert.equal(recipe.allergens.includes('leche'),false);
   const alternatives=Meals.exchange(id,['leche'],'vegetarian');assert.ok(alternatives.length>0);
   assert.ok(alternatives.every(r=>r.category===category&&r.vegetarian&&!r.allergens.includes('leche')));
 }
-assert.ok(Meals.total(menu,'2026-10-17').kcal>0);
+assert.ok(Meals.total(menu,'2026-10-17').kcal>0);const shop=Meals.groceries(menu);assert.ok(shop.length>10&&shop.every(x=>x.grams>0));const firstMeal=menu['2026-10-17'].Desayuno,alt=Meals.exchange(firstMeal)[0];menu['2026-10-17'].Desayuno=alt.id;assert.notDeepEqual(Meals.groceries(menu),shop,'La compra debe reflejar el intercambio');assert.notDeepEqual(Meals.groceries(menu,2200),Meals.groceries(menu),'La compra debe reflejar las raciones ajustadas');
 const settings={days:3,level:'inicial',goal:'musculo',equipment:'mancuernas',programId:'cycle-1'};
 const first=Coach.session(settings,[],'train-1','2026-10-17');
 assert.equal(first.exercises.length,5);assert.equal(first.exercises[0].sets.length,2);
@@ -63,6 +63,6 @@ assert.equal(Coach.next(settings,[{...first,status:'completed'}]).day,1);
 assert.equal(Coach.next({...settings,programId:'cycle-2'},[{...first,status:'completed'}]).day,0);
 assert.equal(Coach.routine(settings,4,0).light,true);const marks={...first,status:'completed',exercises:[{...first.exercises[0],sets:[{kg:'20',reps:'12',done:true},{kg:'20',reps:'9',done:true}]}]};assert.match(Coach.suggested([marks],Coach.routine(settings,1,0).exercises[0]).note,/Repite la carga/);marks.exercises[0].sets[1].reps='12';assert.match(Coach.suggested([marks],Coach.routine(settings,1,0).exercises[0]).note,/aumento de carga/);
 const withPlans={...old,coachProfile:settings,mealPreferences:{diet:'vegetarian',avoid:['leche']},mealSelections:menu};
-const restored=B.merge(old,withPlans);
+withPlans.favoriteRecipes=[alt.id];withPlans.groceryChecked={'avena':true};withPlans.bodyWeights=[{date:'2026-10-17',kg:75}];const restored=B.merge(old,withPlans);assert.deepEqual(restored.favoriteRecipes,[alt.id]);assert.deepEqual(restored.bodyWeights,withPlans.bodyWeights);assert.throws(()=>B.validate({...withPlans,bodyWeights:'mal'}),/Medidas inválidas/);
 assert.deepEqual(restored.mealSelections,menu);assert.deepEqual(restored.coachProfile,settings);
 console.log('Programa de 8 semanas y 1008 recetas intercambiables verificados');
