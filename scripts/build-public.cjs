@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),vm=require('node:vm');
-const required=['index.html','app.js','storage.js','migration.js','training-utils.js','nutrition.js','recipes.js','backup-validator.js','profile.js','history-export.js','sw.js','manifest.webmanifest','icons/icon.svg'];
+const required=['index.html','app.js','storage.js','migration.js','training-utils.js','nutrition.js','recipes.js','coach.js','meal-planner.js','backup-validator.js','profile.js','history-export.js','sw.js','manifest.webmanifest','icons/icon.svg'];
 const out=path.resolve('dist');fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
 for(const relative of required){
   const source=path.resolve(relative);
