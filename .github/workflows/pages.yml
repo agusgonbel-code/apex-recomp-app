@@ -18,8 +18,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Pruebas de integridad, migración y entrenamiento
+      - name: Verificar integridad y pruebas de la aplicación
         run: node test-integration.cjs
+      - name: Construir distribución pública segura
+        run: node scripts/build-public.cjs
+      - name: Conservar distribución verificada
+        uses: actions/upload-artifact@v4
+        with:
+          name: apex-recomp-dist
+          path: dist/
+          if-no-files-found: error
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -27,10 +35,13 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: apex-recomp-dist
+          path: dist/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist/
       - id: deployment
         uses: actions/deploy-pages@v4
