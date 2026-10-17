@@ -18,3 +18,7 @@ Referencias de diseño: [posición ACSM 2026 sobre entrenamiento de fuerza](http
 GitHub Pages debe estar activado con origen **GitHub Actions**. `.github/workflows/pages.yml` ejecuta `node test-integration.cjs`, construye una distribución pública sin datos personales, prueba los recorridos en Chromium y publica solo tras pasar las pruebas. `node scripts/browser-smoke.cjs` requiere Playwright 1.56.1 y Chromium instalado.
 
 Inspiración funcional a partir de valoraciones de [Hevy](https://apps.apple.com/es/app/hevy-gym-tracker-y-rutinas/id1458862350), [Strong](https://apps.apple.com/es/app/strong-workout-tracker-gym-log/id464254577), [MacroFactor](https://apps.apple.com/es/app/macrofactor-macro-tracker/id1553503471), [Cronometer](https://apps.apple.com/es/app/contar-calorias-cronometer/id1145935738) y [Mealime](https://apps.apple.com/es/app/mealime-meal-plans-recipes/id1079999103). Implementación original; no incluye sus bases de datos, algoritmos, sincronización, vídeos ni servicios comerciales.
+
+## Acceso rápido
+
+La pantalla **Hoy** permite iniciar o continuar la siguiente sesión guiada y registrar los platos del día. **Entrenar** mantiene el inicio libre bajo un desplegable y muestra marcas anteriores durante la sesión. En las sesiones guiadas, «Cambiar ejercicio» propone alternativas según el material elegido; cada ejercicio conserva su identidad en el historial. **Nutrición** permite repetir alimentos usados antes, registrar otro día y comparar energía o proteína con objetivos que el usuario haya fijado. Las cifras no se ajustan automáticamente.
