@@ -1,6 +1,6 @@
 // APEX RECOMP: comprobaciones sin dependencias externas.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const files=['storage.js','migration.js','training-utils.js','nutrition.js','recipes.js','backup-validator.js','profile.js','history-export.js','app.js','sw.js'];
+const files=['storage.js','migration.js','training-utils.js','nutrition.js','recipes.js','coach.js','meal-planner.js','backup-validator.js','profile.js','history-export.js','app.js','sw.js'];
 for(const f of files){const s=fs.readFileSync(f,'utf8');new vm.Script(s,{filename:f});console.log('Sintaxis OK:',f);}
 const read=(f)=>require('./'+f);
 const T=read('training-utils.js'),S=read('storage.js'),B=read('backup-validator.js'),N=read('nutrition.js'),P=read('profile.js'),C=read('history-export.js');
@@ -42,3 +42,27 @@ assert.match(C.exportCSV([{...old.sessions[0],title:'=HYPERLINK("evil")'}]),/'=H
 console.log('Migración, fusión, conflictos y recuperación local verificados');
 
 console.log('APEX RECOMP: pruebas de integración superadas');
+// El catálogo, los intercambios y la progresión se comprueban sin tocar datos reales.
+const Meals=read('meal-planner.js'),Coach=read('coach.js');
+assert.ok(Meals.catalog.length>1000);
+assert.equal(new Set(Meals.catalog.map(r=>r.id)).size,Meals.catalog.length);
+assert.equal(new Set(Meals.catalog.map(r=>r.name)).size,Meals.catalog.length);
+assert.deepEqual(Object.keys(Meals.groups).map(c=>Meals.search('',c).length),[252,252,252,252]);
+const menu=Meals.makePlan('2026-10-17',['leche'],'vegetarian');
+assert.equal(Object.keys(menu).length,7);
+for(const meals of Object.values(menu))for(const [category,id] of Object.entries(meals)){
+  const recipe=Meals.byId.get(id);assert.equal(recipe.category,category);assert.equal(recipe.vegetarian,true);assert.equal(recipe.allergens.includes('leche'),false);
+  const alternatives=Meals.exchange(id,['leche'],'vegetarian');assert.ok(alternatives.length>0);
+  assert.ok(alternatives.every(r=>r.category===category&&r.vegetarian&&!r.allergens.includes('leche')));
+}
+assert.ok(Meals.total(menu,'2026-10-17').kcal>0);
+const settings={days:3,level:'inicial',goal:'musculo',equipment:'mancuernas',programId:'cycle-1'};
+const first=Coach.session(settings,[],'train-1','2026-10-17');
+assert.equal(first.exercises.length,5);assert.equal(first.exercises[0].sets.length,2);
+assert.equal(Coach.next(settings,[{...first,status:'completed'}]).day,1);
+assert.equal(Coach.next({...settings,programId:'cycle-2'},[{...first,status:'completed'}]).day,0);
+assert.equal(Coach.routine(settings,4,0).light,true);
+const withPlans={...old,coachProfile:settings,mealPreferences:{diet:'vegetarian',avoid:['leche']},mealSelections:menu};
+const restored=B.merge(old,withPlans);
+assert.deepEqual(restored.mealSelections,menu);assert.deepEqual(restored.coachProfile,settings);
+console.log('Programa de 8 semanas y 1008 recetas intercambiables verificados');
