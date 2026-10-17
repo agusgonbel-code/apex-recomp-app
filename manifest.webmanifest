@@ -1,0 +1,25 @@
+{
+  "name": "APEX RECOMP — Beta 0.19",
+  "short_name": "APEX RECOMP",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101722",
+  "theme_color": "#101722",
+  "lang": "es",
+  "description": "Entrenamiento, nutrición e historial personal. Beta 0.19",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
