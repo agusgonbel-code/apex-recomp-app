@@ -2,6 +2,10 @@
 
 PWA para registrar marcas, seguir sesiones de fuerza y organizar comidas. Abre https://agusgonbel-code.github.io/apex-recomp-app/ en Safari y usa Compartir → Añadir a pantalla de inicio.
 
+## Experiencia 2.0
+
+La pantalla **Hoy** muestra la siguiente acción, tres sesiones próximas y las comidas del día. Durante un entrenamiento guiado se trabaja un ejercicio a la vez: la barra superior permite saltar a cualquiera de ellos, ver series completadas y retomar el punto guardado. **Plan** conserva la vista de las ocho semanas y muestra cuántas sesiones se han completado en cada una. **Comidas** usa fechas legibles y un resumen de energía y macronutrientes. El rediseño usa la misma clave de almacenamiento y el mismo origen web para conservar datos anteriores; no borres el sitio ni sus datos de Safari al actualizar.
+
 ## Cómo empezar
 
 1. En **Programa**, elige entre dos y cinco días por semana, objetivo, experiencia y material. La app prepara ocho semanas de sesiones de cuerpo completo o tren superior/inferior, con series, repeticiones, RIR y descansos. Se proponen cargas a partir de las marcas previas; la elección final de peso es del usuario. Las semanas 4 y 8 pueden reducir volumen por elección del usuario. Se pueden ver las ocho semanas y mover las fechas orientativas sin reiniciar las marcas. Puedes cambiar un ejercicio o su orden durante la sesión.
