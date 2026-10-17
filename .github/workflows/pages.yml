@@ -18,10 +18,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verificar integridad y pruebas de la aplicación
+      - name: Verificar integridad y funciones de la aplicación
         run: node test-integration.cjs
       - name: Construir distribución pública segura
         run: node scripts/build-public.cjs
+      - name: Instalar navegador de pruebas
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Probar guardado y recuperación en navegador
+        run: node scripts/browser-smoke.cjs
       - name: Conservar distribución verificada
         uses: actions/upload-artifact@v4
         with:
